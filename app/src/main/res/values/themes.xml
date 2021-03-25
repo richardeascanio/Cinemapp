@@ -12,12 +12,21 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
+        <item name="bottomNavigationStyle">@style/CustomBottomNavigationView</item>
     </style>
 
     <style name="Theme.Cinemapp.Fullscreen" parent="Theme.Cinemapp">
         <item name="android:actionBarStyle">@style/Widget.Theme.Cinemapp.ActionBar.Fullscreen</item>
         <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:windowBackground">@color/white</item>
         <item name="android:statusBarColor">@color/black</item>
+    </style>
+
+    <style name="CustomBottomNavigationView" parent="Widget.MaterialComponents.BottomNavigationView">
+        <item name="backgroundTint">@color/bottomNavBackground</item>
+        <item name="itemIconTint">@color/bottom_nav_view_item_color</item>
+        <item name="itemTextColor">@color/bottom_nav_view_item_color</item>
+
     </style>
 
 </resources>
