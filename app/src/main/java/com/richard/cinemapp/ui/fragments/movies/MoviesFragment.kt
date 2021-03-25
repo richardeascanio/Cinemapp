@@ -7,12 +7,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.richard.cinemapp.adapters.UpcomingAdapter
 import com.richard.cinemapp.databinding.FragmentMoviesBinding
 import com.richard.cinemapp.utils.Constants.API_KEY
 import com.richard.cinemapp.utils.NetworkResult
+import com.richard.cinemapp.utils.SliderTransformer
+import com.richard.cinemapp.utils.observeOnce
 import com.richard.cinemapp.viewModels.MoviesViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -23,6 +25,7 @@ class MoviesFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var viewModel: MoviesViewModel
+    private val mAdapter by lazy { UpcomingAdapter() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,6 +38,8 @@ class MoviesFragment : Fragment() {
     ): View {
         _binding = FragmentMoviesBinding.inflate(inflater, container, false)
 
+        initViewPager()
+
         lifecycleScope.launchWhenStarted {
             viewModel.getUpcomingMovies(API_KEY)
         }
@@ -43,6 +48,9 @@ class MoviesFragment : Fragment() {
             when (response) {
                 is NetworkResult.Success -> {
                     Log.i("debug", "observe: success ${response.data}")
+                    response.data?.let {
+                        mAdapter.setData(it.movies)
+                    }
                 }
                 is NetworkResult.Error -> {
                     Toast.makeText(
@@ -58,6 +66,18 @@ class MoviesFragment : Fragment() {
         }
 
         return binding.root
+    }
+
+    private fun initViewPager() = binding.upcomingMoviesViewPager.apply {
+        val offscreenLimit = 3
+        adapter = mAdapter
+        offscreenPageLimit = offscreenLimit
+        setPageTransformer(SliderTransformer(offscreenLimit))
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
 }

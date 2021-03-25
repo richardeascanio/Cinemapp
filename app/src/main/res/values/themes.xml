@@ -13,6 +13,7 @@
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
         <item name="bottomNavigationStyle">@style/CustomBottomNavigationView</item>
+        <item name="fontFamily">@font/opens_sans</item>
     </style>
 
     <style name="Theme.Cinemapp.Fullscreen" parent="Theme.Cinemapp">
