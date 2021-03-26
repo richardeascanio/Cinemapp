@@ -8,4 +8,8 @@ object Constants {
     const val BASE_IMAGE_URL = "https://image.tmdb.org/t/p/w500"
     const val REQUEST_TIMEOUT = 15L
 
+    // DataStore
+    const val PREFERENCES_NAME = "cinemapp_preferences"
+    const val PREFERENCES_BACK_ONLINE = "backOnline"
+
 }

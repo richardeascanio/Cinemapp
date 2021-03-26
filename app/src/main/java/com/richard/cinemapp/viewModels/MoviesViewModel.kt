@@ -4,13 +4,17 @@ import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import com.richard.cinemapp.data.DataStoreRepository
 import com.richard.cinemapp.data.Repository
 import com.richard.cinemapp.models.Result
 import com.richard.cinemapp.utils.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.Response
 import java.lang.Exception
@@ -21,8 +25,14 @@ class MoviesViewModel
 @Inject
 constructor(
     private val repository: Repository,
-    application: Application
+    application: Application,
+    private val dataStoreRepository: DataStoreRepository
 ) : AndroidViewModel(application) {
+
+    // DATA STORE
+    var networkStatus = false
+    var backOnline = false
+    val readBackOnline = dataStoreRepository.readBackOnline.asLiveData()
 
     // RETROFIT
     var upcomingMoviesResponse: MutableLiveData<NetworkResult<Result>> = MutableLiveData()
@@ -47,15 +57,31 @@ constructor(
     }
 
     private fun handleUpcomingMoviesResponse(response: Response<Result>): NetworkResult<Result> {
-        when {
+        return when {
             response.body()!!.movies.isNullOrEmpty() -> {
-                return NetworkResult.Error("Movies not found.")
+                NetworkResult.Error("Movies not found.")
             }
             response.isSuccessful -> {
                 val upcomingMovies = response.body()
-                return NetworkResult.Success(upcomingMovies!!)
+                NetworkResult.Success(upcomingMovies!!)
             } else -> {
-                return NetworkResult.Error(response.message())
+                NetworkResult.Error(response.message())
+            }
+        }
+    }
+
+    private fun saveBackOnline(backOnline: Boolean) = viewModelScope.launch(Dispatchers.IO) {
+        dataStoreRepository.saveBackOnline(backOnline)
+    }
+
+    fun showNetworkStatus() {
+        if (!networkStatus) {
+            Toast.makeText(getApplication(), "No internet connection", Toast.LENGTH_SHORT).show()
+            saveBackOnline(false)
+        } else if (networkStatus) {
+            if (backOnline) {
+                Toast.makeText(getApplication(), "We're back online", Toast.LENGTH_SHORT).show()
+                saveBackOnline(true)
             }
         }
     }
