@@ -13,7 +13,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.richard.cinemapp.adapters.NowPlayingAdapter
 import com.richard.cinemapp.adapters.UpcomingAdapter
 import com.richard.cinemapp.databinding.FragmentMoviesBinding
-import com.richard.cinemapp.utils.Constants.API_KEY
+import com.richard.cinemapp.utils.Constants.DEFAULT_REGION
+import com.richard.cinemapp.utils.Constants.USA_REGION
 import com.richard.cinemapp.utils.NetworkListener
 import com.richard.cinemapp.utils.NetworkResult
 import com.richard.cinemapp.utils.SliderTransformer
@@ -33,6 +34,7 @@ class MoviesFragment : Fragment() {
     private lateinit var viewModel: MoviesViewModel
     private val upcomingAdapter by lazy { UpcomingAdapter() }
     private val nowPlayingAdapter by lazy { NowPlayingAdapter() }
+    private val topRatedAdapter by lazy { NowPlayingAdapter() }
 
     private lateinit var networkListener: NetworkListener
 
@@ -50,8 +52,9 @@ class MoviesFragment : Fragment() {
         // Upcoming Movies
         setUpViewPager()
 
-        // Now Playing Movies
-        setUpRecyclerView()
+        // Set up recycler views
+        setUpNowPlayingRecyclerView()
+        setUpTopRatingRecyclerView()
 
         subscribeObservers()
 
@@ -64,6 +67,7 @@ class MoviesFragment : Fragment() {
                     viewModel.showNetworkStatus()
                     getUpcomingMovies()
                     getNowPlayingMovies()
+                    getTopRatedMovies()
                 }
         }
 
@@ -77,8 +81,13 @@ class MoviesFragment : Fragment() {
         setPageTransformer(SliderTransformer(offscreenLimit))
     }
 
-    private fun setUpRecyclerView() = binding.nowPlayingRecyclerView.apply {
+    private fun setUpNowPlayingRecyclerView() = binding.nowPlayingRecyclerView.apply {
         adapter = nowPlayingAdapter
+        layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+    }
+
+    private fun setUpTopRatingRecyclerView() = binding.topRatedRecyclerView.apply {
+        adapter = topRatedAdapter
         layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
     }
 
@@ -91,7 +100,7 @@ class MoviesFragment : Fragment() {
 
     private fun getUpcomingMovies() {
         lifecycleScope.launch {
-            viewModel.getUpcomingMovies(API_KEY)
+            viewModel.getUpcomingMovies(viewModel.applyQueries(USA_REGION))
             viewModel.upcomingMoviesResponse.observe(viewLifecycleOwner) { response ->
                 when (response) {
                     is NetworkResult.Success -> {
@@ -115,13 +124,38 @@ class MoviesFragment : Fragment() {
 
     private fun getNowPlayingMovies() {
         lifecycleScope.launch {
-            viewModel.getNowPlayingMovies(API_KEY)
+            viewModel.getNowPlayingMovies(viewModel.applyQueries(USA_REGION))
             viewModel.nowPlayingMoviesResponse.observe(viewLifecycleOwner) { response ->
                 when (response) {
                     is NetworkResult.Success -> {
                         response.data?.let {
                             Log.d("debug", "getNowPlayingMovies: ${it.movies}")
                             nowPlayingAdapter.setData(it.movies)
+                        }
+                    }
+                    is NetworkResult.Error -> {
+                        Toast.makeText(
+                            requireContext(),
+                            response.message.toString(),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                    is NetworkResult.Loading -> {
+                    }
+                }
+            }
+        }
+    }
+
+    private fun getTopRatedMovies() {
+        lifecycleScope.launch {
+            viewModel.getTopRatedMovies(viewModel.applyQueries(DEFAULT_REGION))
+            viewModel.topRatedMoviesResponse.observe(viewLifecycleOwner) { response ->
+                when (response) {
+                    is NetworkResult.Success -> {
+                        response.data?.let {
+                            Log.d("debug", "getTopRatedMovies: ${it.movies}")
+                            topRatedAdapter.setData(it.movies)
                         }
                     }
                     is NetworkResult.Error -> {

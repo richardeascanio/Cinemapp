@@ -12,4 +12,10 @@ object Constants {
     const val PREFERENCES_NAME = "cinemapp_preferences"
     const val PREFERENCES_BACK_ONLINE = "backOnline"
 
+    // Remote Data Source
+    const val QUERY_API_KEY = "api_key"
+    const val QUERY_REGION = "region"
+    const val DEFAULT_REGION = "VE"
+    const val USA_REGION = "US"
+
 }

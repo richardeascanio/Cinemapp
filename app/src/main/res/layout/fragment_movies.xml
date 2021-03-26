@@ -47,7 +47,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
             android:layout_marginEnd="24dp"
             android:text="@string/now_playing"
             android:textColor="@color/darker"
@@ -62,11 +62,35 @@
             android:id="@+id/nowPlaying_recyclerView"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-
             android:layout_marginTop="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/nowPlayingLabel_textView" />
+
+        <TextView
+            android:id="@+id/topRatedLabel_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="24dp"
+            android:text="@string/top_rated"
+            android:textColor="@color/darker"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/nowPlaying_recyclerView" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/topRated_recyclerView"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/topRatedLabel_textView" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

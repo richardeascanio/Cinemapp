@@ -12,14 +12,19 @@ constructor(
   private val moviesApi: MoviesApi
 ) {
 
-    suspend fun getUpcomingMovies(apiKey: String): Response<Result> {
-        Log.i("debug", "getUpcomingMovies: ${moviesApi.getUpcoming(apiKey)}")
-        return moviesApi.getUpcoming(apiKey)
+    suspend fun getUpcomingMovies(queries: Map<String, String>): Response<Result> {
+        Log.i("debug", "getUpcomingMovies: ${moviesApi.getUpcoming(queries)}")
+        return moviesApi.getUpcoming(queries)
     }
 
-    suspend fun getNowPlayingMovies(apiKey: String): Response<Result> {
-        Log.i("debug", "getNowPlayingMovies: ${moviesApi.getNowPlaying(apiKey)}")
-        return moviesApi.getNowPlaying(apiKey)
+    suspend fun getNowPlayingMovies(queries: Map<String, String>): Response<Result> {
+        Log.i("debug", "getNowPlayingMovies: ${moviesApi.getNowPlaying(queries)}")
+        return moviesApi.getNowPlaying(queries)
+    }
+
+    suspend fun getTopRatedMovies(queries: Map<String, String>): Response<Result> {
+        Log.i("debug", "getTopRatedMovies: ${moviesApi.getTopRated(queries)}")
+        return moviesApi.getTopRated(queries)
     }
 
 }
