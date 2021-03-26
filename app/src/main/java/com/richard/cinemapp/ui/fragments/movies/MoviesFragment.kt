@@ -35,6 +35,7 @@ class MoviesFragment : Fragment() {
     private val upcomingAdapter by lazy { UpcomingAdapter() }
     private val nowPlayingAdapter by lazy { NowPlayingAdapter() }
     private val topRatedAdapter by lazy { NowPlayingAdapter() }
+    private val popularAdapter by lazy { NowPlayingAdapter() }
 
     private lateinit var networkListener: NetworkListener
 
@@ -55,6 +56,7 @@ class MoviesFragment : Fragment() {
         // Set up recycler views
         setUpNowPlayingRecyclerView()
         setUpTopRatingRecyclerView()
+        setUpPopularRecyclerView()
 
         subscribeObservers()
 
@@ -68,6 +70,7 @@ class MoviesFragment : Fragment() {
                     getUpcomingMovies()
                     getNowPlayingMovies()
                     getTopRatedMovies()
+                    getPopularMovies()
                 }
         }
 
@@ -88,6 +91,11 @@ class MoviesFragment : Fragment() {
 
     private fun setUpTopRatingRecyclerView() = binding.topRatedRecyclerView.apply {
         adapter = topRatedAdapter
+        layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+    }
+
+    private fun setUpPopularRecyclerView() = binding.popularRecyclerView.apply {
+        adapter = popularAdapter
         layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
     }
 
@@ -156,6 +164,31 @@ class MoviesFragment : Fragment() {
                         response.data?.let {
                             Log.d("debug", "getTopRatedMovies: ${it.movies}")
                             topRatedAdapter.setData(it.movies)
+                        }
+                    }
+                    is NetworkResult.Error -> {
+                        Toast.makeText(
+                            requireContext(),
+                            response.message.toString(),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                    is NetworkResult.Loading -> {
+                    }
+                }
+            }
+        }
+    }
+
+    private fun getPopularMovies() {
+        lifecycleScope.launch {
+            viewModel.getPopularMovies(viewModel.applyQueries(DEFAULT_REGION))
+            viewModel.popularMoviesResponse.observe(viewLifecycleOwner) { response ->
+                when (response) {
+                    is NetworkResult.Success -> {
+                        response.data?.let {
+                            Log.d("debug", "getPopularMovies: ${it.movies}")
+                            popularAdapter.setData(it.movies)
                         }
                     }
                     is NetworkResult.Error -> {

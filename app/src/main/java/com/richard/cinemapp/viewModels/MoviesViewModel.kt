@@ -41,6 +41,7 @@ constructor(
     var upcomingMoviesResponse: MutableLiveData<NetworkResult<Result>> = MutableLiveData()
     var nowPlayingMoviesResponse: MutableLiveData<NetworkResult<Result>> = MutableLiveData()
     var topRatedMoviesResponse: MutableLiveData<NetworkResult<Result>> = MutableLiveData()
+    var popularMoviesResponse: MutableLiveData<NetworkResult<Result>> = MutableLiveData()
 
     fun getUpcomingMovies(queries: Map<String, String>) = viewModelScope.launch {
         getUpcomingMoviesSafeCall(queries)
@@ -52,6 +53,10 @@ constructor(
 
     fun getTopRatedMovies(queries: Map<String, String>) = viewModelScope.launch {
         getTopRatedMoviesSafeCall(queries)
+    }
+
+    fun getPopularMovies(queries: Map<String, String>) = viewModelScope.launch {
+        getPopularMoviesSafeCall(queries)
     }
 
     private suspend fun getUpcomingMoviesSafeCall(queries: Map<String, String>) {
@@ -86,6 +91,18 @@ constructor(
                 topRatedMoviesResponse.postValue(handleTopRatedMoviesResponse(response))
             } catch (e: Exception) {
                 topRatedMoviesResponse.postValue(NetworkResult.Error("Movies not found."))
+            }
+        }
+    }
+
+    private suspend fun getPopularMoviesSafeCall(queries: Map<String, String>) {
+        popularMoviesResponse.postValue(NetworkResult.Loading())
+        if (hasInternetConnection()) {
+            try {
+                val response = repository.remote.getPopularMovies(queries)
+                popularMoviesResponse.postValue(handlePopularMoviesResponse(response))
+            } catch (e: Exception) {
+                popularMoviesResponse.postValue(NetworkResult.Error("Movies not found."))
             }
         }
     }
@@ -126,6 +143,20 @@ constructor(
             response.isSuccessful -> {
                 val topRatedMovies = response.body()
                 NetworkResult.Success(topRatedMovies!!)
+            } else -> {
+                NetworkResult.Error(response.message())
+            }
+        }
+    }
+
+    private fun handlePopularMoviesResponse(response: Response<Result>): NetworkResult<Result> {
+        return when {
+            response.body()!!.movies.isNullOrEmpty() -> {
+                NetworkResult.Error("Movies not found.")
+            }
+            response.isSuccessful -> {
+                val popularMovies = response.body()
+                NetworkResult.Success(popularMovies!!)
             } else -> {
                 NetworkResult.Error(response.message())
             }

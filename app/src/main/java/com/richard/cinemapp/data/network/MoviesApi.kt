@@ -3,7 +3,6 @@ package com.richard.cinemapp.data.network
 import com.richard.cinemapp.models.Result
 import retrofit2.Response
 import retrofit2.http.GET
-import retrofit2.http.Query
 import retrofit2.http.QueryMap
 
 interface MoviesApi {
@@ -20,6 +19,11 @@ interface MoviesApi {
 
     @GET("movie/top_rated")
     suspend fun getTopRated(
+        @QueryMap queries: Map<String, String>
+    ): Response<Result>
+
+    @GET("movie/popular")
+    suspend fun getPopular(
         @QueryMap queries: Map<String, String>
     ): Response<Result>
 

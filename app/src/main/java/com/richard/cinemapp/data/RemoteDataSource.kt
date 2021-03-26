@@ -27,4 +27,9 @@ constructor(
         return moviesApi.getTopRated(queries)
     }
 
+    suspend fun getPopularMovies(queries: Map<String, String>): Response<Result> {
+        Log.i("debug", "getPopularMovies: ${moviesApi.getPopular(queries)}")
+        return moviesApi.getPopular(queries)
+    }
+
 }
