@@ -10,8 +10,8 @@ import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.richard.cinemapp.adapters.NowPlayingAdapter
-import com.richard.cinemapp.adapters.UpcomingAdapter
+import com.richard.cinemapp.adapters.NowPlayingMoviesAdapter
+import com.richard.cinemapp.adapters.UpcomingMoviesAdapter
 import com.richard.cinemapp.databinding.FragmentMoviesBinding
 import com.richard.cinemapp.utils.Constants.DEFAULT_REGION
 import com.richard.cinemapp.utils.Constants.USA_REGION
@@ -32,10 +32,10 @@ class MoviesFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var viewModel: MoviesViewModel
-    private val upcomingAdapter by lazy { UpcomingAdapter() }
-    private val nowPlayingAdapter by lazy { NowPlayingAdapter() }
-    private val topRatedAdapter by lazy { NowPlayingAdapter() }
-    private val popularAdapter by lazy { NowPlayingAdapter() }
+    private val upcomingAdapter by lazy { UpcomingMoviesAdapter() }
+    private val nowPlayingAdapter by lazy { NowPlayingMoviesAdapter() }
+    private val topRatedAdapter by lazy { NowPlayingMoviesAdapter() }
+    private val popularAdapter by lazy { NowPlayingMoviesAdapter() }
 
     private lateinit var networkListener: NetworkListener
 
@@ -58,13 +58,13 @@ class MoviesFragment : Fragment() {
         setUpTopRatingRecyclerView()
         setUpPopularRecyclerView()
 
+        // Subscribe observers
         subscribeObservers()
 
         lifecycleScope.launchWhenStarted {
             networkListener = NetworkListener()
             networkListener.checkNetworkAvailability(requireContext())
                 .collect { status ->
-                    Log.i("debug", "networkListener: $status")
                     viewModel.networkStatus = status
                     viewModel.showNetworkStatus()
                     getUpcomingMovies()

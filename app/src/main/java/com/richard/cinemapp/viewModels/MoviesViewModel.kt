@@ -11,7 +11,7 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.richard.cinemapp.data.DataStoreRepository
 import com.richard.cinemapp.data.Repository
-import com.richard.cinemapp.models.Result
+import com.richard.cinemapp.models.MovieResult
 import com.richard.cinemapp.utils.Constants.API_KEY
 import com.richard.cinemapp.utils.Constants.QUERY_API_KEY
 import com.richard.cinemapp.utils.Constants.QUERY_REGION
@@ -38,10 +38,10 @@ constructor(
     val readBackOnline = dataStoreRepository.readBackOnline.asLiveData()
 
     // RETROFIT
-    var upcomingMoviesResponse: MutableLiveData<NetworkResult<Result>> = MutableLiveData()
-    var nowPlayingMoviesResponse: MutableLiveData<NetworkResult<Result>> = MutableLiveData()
-    var topRatedMoviesResponse: MutableLiveData<NetworkResult<Result>> = MutableLiveData()
-    var popularMoviesResponse: MutableLiveData<NetworkResult<Result>> = MutableLiveData()
+    var upcomingMoviesResponse: MutableLiveData<NetworkResult<MovieResult>> = MutableLiveData()
+    var nowPlayingMoviesResponse: MutableLiveData<NetworkResult<MovieResult>> = MutableLiveData()
+    var topRatedMoviesResponse: MutableLiveData<NetworkResult<MovieResult>> = MutableLiveData()
+    var popularMoviesResponse: MutableLiveData<NetworkResult<MovieResult>> = MutableLiveData()
 
     fun getUpcomingMovies(queries: Map<String, String>) = viewModelScope.launch {
         getUpcomingMoviesSafeCall(queries)
@@ -107,7 +107,7 @@ constructor(
         }
     }
 
-    private fun handleUpcomingMoviesResponse(response: Response<Result>): NetworkResult<Result> {
+    private fun handleUpcomingMoviesResponse(response: Response<MovieResult>): NetworkResult<MovieResult> {
         return when {
             response.body()!!.movies.isNullOrEmpty() -> {
                 NetworkResult.Error("Movies not found.")
@@ -121,7 +121,7 @@ constructor(
         }
     }
 
-    private fun handleNowPlayingMoviesResponse(response: Response<Result>): NetworkResult<Result> {
+    private fun handleNowPlayingMoviesResponse(response: Response<MovieResult>): NetworkResult<MovieResult> {
         return when {
             response.body()!!.movies.isNullOrEmpty() -> {
                 NetworkResult.Error("Movies not found.")
@@ -135,7 +135,7 @@ constructor(
         }
     }
 
-    private fun handleTopRatedMoviesResponse(response: Response<Result>): NetworkResult<Result> {
+    private fun handleTopRatedMoviesResponse(response: Response<MovieResult>): NetworkResult<MovieResult> {
         return when {
             response.body()!!.movies.isNullOrEmpty() -> {
                 NetworkResult.Error("Movies not found.")
@@ -149,7 +149,7 @@ constructor(
         }
     }
 
-    private fun handlePopularMoviesResponse(response: Response<Result>): NetworkResult<Result> {
+    private fun handlePopularMoviesResponse(response: Response<MovieResult>): NetworkResult<MovieResult> {
         return when {
             response.body()!!.movies.isNullOrEmpty() -> {
                 NetworkResult.Error("Movies not found.")

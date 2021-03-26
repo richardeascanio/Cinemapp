@@ -1,6 +1,7 @@
 package com.richard.cinemapp.di
 
 import com.richard.cinemapp.data.network.MoviesApi
+import com.richard.cinemapp.data.network.SeriesApi
 import com.richard.cinemapp.utils.Constants.BASE_URL
 import com.richard.cinemapp.utils.Constants.REQUEST_TIMEOUT
 import dagger.Module
@@ -47,8 +48,14 @@ class NetworkModule {
 
     @Singleton
     @Provides
-    fun provideApiService(retrofit: Retrofit): MoviesApi {
+    fun provideMovieApiService(retrofit: Retrofit): MoviesApi {
         return retrofit.create(MoviesApi::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun provideSeriesApiService(retrofit: Retrofit): SeriesApi {
+        return retrofit.create(SeriesApi::class.java)
     }
 
 }

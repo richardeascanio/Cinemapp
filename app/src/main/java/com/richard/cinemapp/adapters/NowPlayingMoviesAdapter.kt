@@ -8,7 +8,7 @@ import com.richard.cinemapp.databinding.NowPlayingRowLayoutBinding
 import com.richard.cinemapp.models.Movie
 import com.richard.cinemapp.utils.MovieDiffUtil
 
-class NowPlayingAdapter : RecyclerView.Adapter<NowPlayingAdapter.NowPlayingViewHolder>(){
+class NowPlayingMoviesAdapter : RecyclerView.Adapter<NowPlayingMoviesAdapter.NowPlayingViewHolder>(){
 
     private var nowPlayingList = emptyList<Movie>()
 

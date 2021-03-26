@@ -2,7 +2,7 @@ package com.richard.cinemapp.models
 
 import com.google.gson.annotations.SerializedName
 
-data class Result(
+data class SeriesResult(
     @SerializedName("results")
-    val movies: List<Movie>
+    val series: List<Series>
 )

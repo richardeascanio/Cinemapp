@@ -8,7 +8,7 @@ import com.richard.cinemapp.databinding.UpcomingRowLayoutBinding
 import com.richard.cinemapp.models.Movie
 import com.richard.cinemapp.utils.MovieDiffUtil
 
-class UpcomingAdapter : RecyclerView.Adapter<UpcomingAdapter.UpcomingViewHolder>() {
+class UpcomingMoviesAdapter : RecyclerView.Adapter<UpcomingMoviesAdapter.UpcomingViewHolder>() {
 
     private var upcomingList = emptyList<Movie>()
 
