@@ -1,14 +1,11 @@
 package com.richard.cinemapp.bindingAdapters
 
-import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import coil.load
 import com.richard.cinemapp.R
 import com.richard.cinemapp.utils.Constants.BASE_IMAGE_URL
-import java.text.SimpleDateFormat
-import java.util.*
 
 class UpcomingRowLayoutBinding {
 

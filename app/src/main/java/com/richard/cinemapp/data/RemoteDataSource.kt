@@ -17,4 +17,9 @@ constructor(
         return moviesApi.getUpcoming(apiKey)
     }
 
+    suspend fun getNowPlayingMovies(apiKey: String): Response<Result> {
+        Log.i("debug", "getNowPlayingMovies: ${moviesApi.getNowPlaying(apiKey)}")
+        return moviesApi.getNowPlaying(apiKey)
+    }
+
 }

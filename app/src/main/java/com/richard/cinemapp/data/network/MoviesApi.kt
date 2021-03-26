@@ -12,4 +12,9 @@ interface MoviesApi {
         @Query("api_key") apiKey: String
     ): Response<Result>
 
+    @GET("movie/now_playing")
+    suspend fun getNowPlaying(
+        @Query("api_key") apiKey: String
+    ): Response<Result>
+
 }

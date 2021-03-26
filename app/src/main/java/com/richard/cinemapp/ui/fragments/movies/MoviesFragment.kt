@@ -9,6 +9,8 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.richard.cinemapp.adapters.NowPlayingAdapter
 import com.richard.cinemapp.adapters.UpcomingAdapter
 import com.richard.cinemapp.databinding.FragmentMoviesBinding
 import com.richard.cinemapp.utils.Constants.API_KEY
@@ -29,7 +31,8 @@ class MoviesFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var viewModel: MoviesViewModel
-    private val mAdapter by lazy { UpcomingAdapter() }
+    private val upcomingAdapter by lazy { UpcomingAdapter() }
+    private val nowPlayingAdapter by lazy { NowPlayingAdapter() }
 
     private lateinit var networkListener: NetworkListener
 
@@ -45,9 +48,12 @@ class MoviesFragment : Fragment() {
         _binding = FragmentMoviesBinding.inflate(inflater, container, false)
 
         // Upcoming Movies
-        initViewPager()
+        setUpViewPager()
 
-        setUpObservers()
+        // Now Playing Movies
+        setUpRecyclerView()
+
+        subscribeObservers()
 
         lifecycleScope.launchWhenStarted {
             networkListener = NetworkListener()
@@ -56,35 +62,66 @@ class MoviesFragment : Fragment() {
                     Log.i("debug", "networkListener: $status")
                     viewModel.networkStatus = status
                     viewModel.showNetworkStatus()
-                    getMovies()
+                    getUpcomingMovies()
+                    getNowPlayingMovies()
                 }
         }
 
         return binding.root
     }
 
-    private fun initViewPager() = binding.upcomingMoviesViewPager.apply {
+    private fun setUpViewPager() = binding.upcomingMoviesViewPager.apply {
         val offscreenLimit = 3
-        adapter = mAdapter
+        adapter = upcomingAdapter
         offscreenPageLimit = offscreenLimit
         setPageTransformer(SliderTransformer(offscreenLimit))
     }
 
-    private fun setUpObservers() {
+    private fun setUpRecyclerView() = binding.nowPlayingRecyclerView.apply {
+        adapter = nowPlayingAdapter
+        layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+    }
+
+    private fun subscribeObservers() {
         // BACK ONLINE
         viewModel.readBackOnline.observe(viewLifecycleOwner) {
             viewModel.backOnline = it
         }
     }
 
-    private fun getMovies() {
+    private fun getUpcomingMovies() {
         lifecycleScope.launch {
             viewModel.getUpcomingMovies(API_KEY)
             viewModel.upcomingMoviesResponse.observe(viewLifecycleOwner) { response ->
                 when (response) {
                     is NetworkResult.Success -> {
                         response.data?.let {
-                            mAdapter.setData(it.movies)
+                            upcomingAdapter.setData(it.movies)
+                        }
+                    }
+                    is NetworkResult.Error -> {
+                        Toast.makeText(
+                            requireContext(),
+                            response.message.toString(),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                    is NetworkResult.Loading -> {
+                    }
+                }
+            }
+        }
+    }
+
+    private fun getNowPlayingMovies() {
+        lifecycleScope.launch {
+            viewModel.getNowPlayingMovies(API_KEY)
+            viewModel.nowPlayingMoviesResponse.observe(viewLifecycleOwner) { response ->
+                when (response) {
+                    is NetworkResult.Success -> {
+                        response.data?.let {
+                            Log.d("debug", "getNowPlayingMovies: ${it.movies}")
+                            nowPlayingAdapter.setData(it.movies)
                         }
                     }
                     is NetworkResult.Error -> {

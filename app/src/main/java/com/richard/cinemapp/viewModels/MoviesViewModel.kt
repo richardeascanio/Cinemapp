@@ -36,9 +36,14 @@ constructor(
 
     // RETROFIT
     var upcomingMoviesResponse: MutableLiveData<NetworkResult<Result>> = MutableLiveData()
+    var nowPlayingMoviesResponse: MutableLiveData<NetworkResult<Result>> = MutableLiveData()
 
     fun getUpcomingMovies(apiKey: String) = viewModelScope.launch {
         getUpcomingMoviesSafeCall(apiKey)
+    }
+
+    fun getNowPlayingMovies(apiKey: String) = viewModelScope.launch {
+        getNowPlayingMoviesSafeCall(apiKey)
     }
 
     private suspend fun getUpcomingMoviesSafeCall(apiKey: String) {
@@ -51,8 +56,18 @@ constructor(
             } catch (e: Exception) {
                 upcomingMoviesResponse.postValue(NetworkResult.Error("Movies not found."))
             }
-        } else {
-            upcomingMoviesResponse.postValue(NetworkResult.Error("No Internet Connection."))
+        }
+    }
+
+    private suspend fun getNowPlayingMoviesSafeCall(apiKey: String) {
+        nowPlayingMoviesResponse.postValue(NetworkResult.Loading())
+        if (hasInternetConnection()) {
+            try {
+                val response = repository.remote.getNowPlayingMovies(apiKey)
+                nowPlayingMoviesResponse.postValue(handleNowPlayingMoviesResponse(response))
+            } catch (e: Exception) {
+                nowPlayingMoviesResponse.postValue(NetworkResult.Error("Movies not found."))
+            }
         }
     }
 
@@ -64,6 +79,20 @@ constructor(
             response.isSuccessful -> {
                 val upcomingMovies = response.body()
                 NetworkResult.Success(upcomingMovies!!)
+            } else -> {
+                NetworkResult.Error(response.message())
+            }
+        }
+    }
+
+    private fun handleNowPlayingMoviesResponse(response: Response<Result>): NetworkResult<Result> {
+        return when {
+            response.body()!!.movies.isNullOrEmpty() -> {
+                NetworkResult.Error("Movies not found.")
+            }
+            response.isSuccessful -> {
+                val nowPlayingMovies = response.body()
+                NetworkResult.Success(nowPlayingMovies!!)
             } else -> {
                 NetworkResult.Error(response.message())
             }
