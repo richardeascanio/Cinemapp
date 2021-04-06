@@ -4,7 +4,9 @@ import android.util.Log
 import com.richard.cinemapp.data.network.MoviesApi
 import com.richard.cinemapp.data.network.SeriesApi
 import com.richard.cinemapp.models.MovieResult
+import com.richard.cinemapp.models.RateResult
 import com.richard.cinemapp.models.SeriesResult
+import org.json.JSONObject
 import retrofit2.Response
 import javax.inject.Inject
 
@@ -34,6 +36,11 @@ constructor(
     suspend fun getPopularMovies(queries: Map<String, String>): Response<MovieResult> {
         Log.d("debug", "getPopularMovies: ${moviesApi.getPopular(queries)}")
         return moviesApi.getPopular(queries)
+    }
+
+    suspend fun rateMovie(movieId: Int, queries: Map<String, String>, value: String): Response<RateResult> {
+        Log.d("debug", "rateMovie: ${moviesApi.postRating(movieId, queries, value)}")
+        return moviesApi.postRating(movieId, queries, value)
     }
 
     // Series

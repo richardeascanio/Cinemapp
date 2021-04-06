@@ -29,4 +29,6 @@
     <color name="bottomNavItemColor">@color/darkMediumGray</color>
     <color name="bottomNavCheckedItemColor">@color/darker</color>
 
+    <color name="detailsBackground">@color/darker</color>
+
 </resources>

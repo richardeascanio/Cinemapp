@@ -112,11 +112,13 @@ class MoviesFragment : Fragment() {
             viewModel.upcomingMoviesResponse.observe(viewLifecycleOwner) { response ->
                 when (response) {
                     is NetworkResult.Success -> {
+                        binding.moviesProgressBar.visibility = View.INVISIBLE
                         response.data?.let {
                             upcomingAdapter.setData(it.movies)
                         }
                     }
                     is NetworkResult.Error -> {
+                        binding.moviesProgressBar.visibility = View.INVISIBLE
                         Toast.makeText(
                             requireContext(),
                             response.message.toString(),
@@ -124,6 +126,7 @@ class MoviesFragment : Fragment() {
                         ).show()
                     }
                     is NetworkResult.Loading -> {
+                        binding.moviesProgressBar.visibility = View.VISIBLE
                     }
                 }
             }

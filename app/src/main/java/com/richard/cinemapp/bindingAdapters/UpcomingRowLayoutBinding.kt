@@ -2,9 +2,13 @@ package com.richard.cinemapp.bindingAdapters
 
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.BindingAdapter
+import androidx.navigation.findNavController
 import coil.load
 import com.richard.cinemapp.R
+import com.richard.cinemapp.models.Movie
+import com.richard.cinemapp.ui.fragments.movies.MoviesFragmentDirections
 import com.richard.cinemapp.utils.Constants.BASE_IMAGE_URL
 
 class UpcomingRowLayoutBinding {
@@ -32,6 +36,15 @@ class UpcomingRowLayoutBinding {
             else
                 date
             textView.text = formattedDate
+        }
+
+        @BindingAdapter("onMovieClicked")
+        @JvmStatic
+        fun onMovieClicked(movieRowLayout: ConstraintLayout, movie: Movie) {
+            movieRowLayout.setOnClickListener {
+                val action = MoviesFragmentDirections.actionMoviesFragmentToDetailActivity(movie)
+                movieRowLayout.findNavController().navigate(action)
+            }
         }
 
     }
