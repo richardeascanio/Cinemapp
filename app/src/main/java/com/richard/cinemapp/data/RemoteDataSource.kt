@@ -3,6 +3,7 @@ package com.richard.cinemapp.data
 import android.util.Log
 import com.richard.cinemapp.data.network.MoviesApi
 import com.richard.cinemapp.data.network.SeriesApi
+import com.richard.cinemapp.models.Movie
 import com.richard.cinemapp.models.MovieResult
 import com.richard.cinemapp.models.RateResult
 import com.richard.cinemapp.models.SeriesResult
@@ -36,6 +37,11 @@ constructor(
     suspend fun getPopularMovies(queries: Map<String, String>): Response<MovieResult> {
         Log.d("debug", "getPopularMovies: ${moviesApi.getPopular(queries)}")
         return moviesApi.getPopular(queries)
+    }
+
+    suspend fun getMovieDetails(movieId: Int, apiKey: String): Response<Movie> {
+        Log.d("debug", "getMovieDetails: ${moviesApi.getMovieDetail(movieId, apiKey)}")
+        return moviesApi.getMovieDetail(movieId, apiKey)
     }
 
     suspend fun rateMovie(movieId: Int, queries: Map<String, String>, value: String): Response<RateResult> {

@@ -10,8 +10,14 @@ data class Movie(
     val adult: Boolean,
     @SerializedName("backdrop_path")
     val backdropPath: String?,
+    @SerializedName("belongs_to_collection")
+    val belongsToCollection: BelongsToCollection?,
+    @SerializedName("budget")
+    val budget: Int?,
+    @SerializedName("genres")
+    val genres: List<Genre>?,
     @SerializedName("genre_ids")
-    val genreIds: List<Int>,
+    val genreIds: List<Int>?,
     @SerializedName("id")
     val id: Int,
     @SerializedName("original_language")
@@ -19,13 +25,23 @@ data class Movie(
     @SerializedName("original_title")
     val originalTitle: String,
     @SerializedName("overview")
-    val overview: String,
+    val overview: String?,
     @SerializedName("popularity")
     val popularity: Double,
     @SerializedName("poster_path")
     val posterPath: String?,
+    @SerializedName("production_companies")
+    val productionCompanies: List<ProductionCompany>?,
+    @SerializedName("production_countries")
+    val productionCountries: List<ProductionCountry>?,
     @SerializedName("release_date")
     val releaseDate: String,
+    @SerializedName("revenue")
+    val revenue: Int?,
+    @SerializedName("runtime")
+    val runtime: Int?,
+    @SerializedName("tagline")
+    val tagline: String?,
     @SerializedName("title")
     val title: String,
     @SerializedName("video")

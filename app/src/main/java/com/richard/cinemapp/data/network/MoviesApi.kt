@@ -1,5 +1,6 @@
 package com.richard.cinemapp.data.network
 
+import com.richard.cinemapp.models.Movie
 import com.richard.cinemapp.models.MovieResult
 import com.richard.cinemapp.models.RateResult
 import retrofit2.Response
@@ -31,6 +32,14 @@ interface MoviesApi {
         @QueryMap queries: Map<String, String>
     ): Response<MovieResult>
 
+    // Get movie details
+    @GET("movie/{movieId}")
+    suspend fun getMovieDetail(
+        @Path("movieId") id: Int,
+        @Query("api_key") apiKey: String
+    ): Response<Movie>
+
+    // Rate movie
     @Headers("Accept: application/json")
     @FormUrlEncoded
     @POST("movie/{movieId}/rating")
